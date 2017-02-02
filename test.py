@@ -6,8 +6,11 @@ import time
 class MyTk(Tk):
     def __init__(self, master=None):
         Tk.__init__(self, master)
-
-        self.BEARER_TOKEN = "MY BEARER TOKEN"
+        
+        file = open("bearer_token.txt", "r")
+        self.BEARER_TOKEN = file.read()
+        file.close()
+        
         self.HASHTAG = "crowdsharethesisproject"
 
         self.twitter = Twitter(auth=OAuth2(bearer_token=self.BEARER_TOKEN))
@@ -38,7 +41,7 @@ class MyTk(Tk):
     def set_image(self):
         
 
-        img = ImageTk.PhotoImage(Image.open("../Pictures/test/" + str(self.x) + ".jpg"))
+        img = ImageTk.PhotoImage(Image.open("img/" + str(self.x) + ".jpg"))
         self.panel.configure(image = img)
         self.panel.image = img
 
