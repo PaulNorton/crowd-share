@@ -1,17 +1,19 @@
 from tkinter import *
 from twitter import *
+from urllib.request import urlretrieve
 from PIL import ImageTk, Image
-import time
+import os
+import shutil
 
 class MyTk(Tk):
     def __init__(self, master=None):
         Tk.__init__(self, master)
         
-        file = open("bearer_token.txt", "r")
+        file = open('bearer_token.txt', 'r')
         self.BEARER_TOKEN = file.read()
         file.close()
         
-        self.HASHTAG = "crowdsharethesisproject"
+        self.HASHTAG = 'crowdsharethesisproject'
 
         self.twitter = Twitter(auth=OAuth2(bearer_token=self.BEARER_TOKEN))
 
@@ -19,35 +21,27 @@ class MyTk(Tk):
         self.pics = []
 
         self.panel = Label(self)
-        self.panel.pack(side = "bottom", fill = "both", expand = "yes")
+        self.panel.pack(side = 'bottom', fill = 'both', expand = 'yes')
 
-        self.set_image()
-
-        self.id = self.after(2000, self.callback)
+        self.id = self.after(3000, self.callback)
 
     def callback(self):
-        self.x += 1
-        
-        
-        if self.x == 5:
-            self.x = 1
-
-        self.set_image()
         self.search_twitter()
+        self.set_image()
         
         #You can cancel the call by doing "self.after_cancel(self.id)"
-        self.id = self.after(2000, self.callback)
-
-    def set_image(self):
+        self.id = self.after(3000, self.callback)
         
-
-        img = ImageTk.PhotoImage(Image.open("img/" + str(self.x) + ".jpg"))
-        self.panel.configure(image = img)
-        self.panel.image = img
+    def set_image(self):
+        if len(self.pics) > 0:
+            if self.x > len(self.pics):
+                self.x = 1
+            img = ImageTk.PhotoImage(Image.open('img/' + str(self.x) + '.jpg'))
+            self.panel.configure(image = img)
+            self.panel.image = img
+            self.x += 1
 
     def search_twitter(self):
-        print(self.pics)
-
         tweets = self.twitter.search.tweets(q='#'+self.HASHTAG)
         for status in tweets['statuses']:
             try:
@@ -59,9 +53,13 @@ class MyTk(Tk):
                     url = item['media_url_https']
                     if url not in self.pics:
                         self.pics.append(url)
+                        urlretrieve(url, 'img/' + str(len(self.pics)) + '.jpg')
 
+if os.path.isdir('img'):
+    shutil.rmtree('img')
+os.makedirs('img')
 
 root = MyTk()
-root.attributes("-fullscreen", True)
+root.attributes('-fullscreen', True)
 
 root.mainloop()
