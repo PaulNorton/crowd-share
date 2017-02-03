@@ -15,20 +15,11 @@ Install twitter client:
 Install python imaging library:
 `pip3 install pillow`
 
-Sign up for a Twitter dev account:
-https://dev.twitter.com/resources/signup
+Install python requests library
+`pip3 install requests`
 
-Create a new Twitter app:
-https://apps.twitter.com
+Run setup.py and follow instructions:
+`python3 setup.py`
 
-Run create_bearer_token:
-`python3 create_bearer_token.py`
-
-Create Instagram dev account, register an application, and get an access token with a scope of public_content:
-https://www.instagram.com/developer/
-
-Run create_access_token:
-`python3 create_access_token.py`
-
-Run test.py:
-`python3 test.py`
+Run crowdshare.py:
+`python3 crowdshare.py`

@@ -1,8 +1,6 @@
-# Secret Access Token #
-access_token.txt
+# Config file #
+.config
 
 # Media Directory #
 img/
 
-# Secret Bearer Token #
-bearer_token.txt

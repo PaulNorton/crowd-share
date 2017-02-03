@@ -10,15 +10,13 @@ class MyTk(Tk):
     def __init__(self, master=None):
         Tk.__init__(self, master)
         
-        file = open('bearer_token.txt', 'r')
-        self.BEARER_TOKEN = file.read()
+        file = open('.config', 'r')
+        config = json.loads(file.read())
         file.close()
         
-        file = open('access_token.txt', 'r')
-        self.ACCESS_TOKEN = file.read()
-        file.close()
-        
-        self.HASHTAG = 'crowdsharethesisproject'
+        self.BEARER_TOKEN = config['bearer_token']
+        self.ACCESS_TOKEN = config['access_token']        
+        self.HASHTAG = config['hashtag']
 
         self.twitter = Twitter(auth=OAuth2(bearer_token=self.BEARER_TOKEN))
 
