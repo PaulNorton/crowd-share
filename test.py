@@ -1,9 +1,10 @@
 from tkinter import *
 from twitter import *
-from urllib.request import urlretrieve
+from urllib.request import urlretrieve, urlopen
 from PIL import ImageTk, Image
 import os
 import shutil
+import json
 
 class MyTk(Tk):
     def __init__(self, master=None):
@@ -11,6 +12,10 @@ class MyTk(Tk):
         
         file = open('bearer_token.txt', 'r')
         self.BEARER_TOKEN = file.read()
+        file.close()
+        
+        file = open('access_token.txt', 'r')
+        self.ACCESS_TOKEN = file.read()
         file.close()
         
         self.HASHTAG = 'crowdsharethesisproject'
@@ -27,6 +32,7 @@ class MyTk(Tk):
 
     def callback(self):
         self.search_twitter()
+        self.search_instagram()
         self.set_image()
         
         #You can cancel the call by doing "self.after_cancel(self.id)"
@@ -54,6 +60,16 @@ class MyTk(Tk):
                     if url not in self.pics:
                         self.pics.append(url)
                         urlretrieve(url, 'img/' + str(len(self.pics)) + '.jpg')
+    
+    def search_instagram(self):
+        response = urlopen('https://api.instagram.com/v1/tags/' + self.HASHTAG + '/media/recent?access_token=' + self.ACCESS_TOKEN)
+        json_data = json.load(response)
+        posts = json_data['data']
+        for post in posts:
+            url = post['images']['standard_resolution']['url']
+            if url not in self.pics:
+                self.pics.append(url)
+                urlretrieve(url, 'img/' + str(len(self.pics)) + '.jpg')
 
 if os.path.isdir('img'):
     shutil.rmtree('img')

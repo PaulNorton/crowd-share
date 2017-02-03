@@ -24,5 +24,11 @@ https://apps.twitter.com
 Run create_bearer_token:
 `python3 create_bearer_token.py`
 
+Create Instagram dev account, register an application, and get an access token with a scope of public_content:
+https://www.instagram.com/developer/
+
+Run create_access_token:
+`python3 create_access_token.py`
+
 Run test.py:
 `python3 test.py`
