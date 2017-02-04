@@ -45,12 +45,15 @@ json_data = json.loads(r.content.decode())
 access_token = json_data['access_token']
 
 print('')
+print('You will also need to set up an AWS and use the AWS CLI to configure a default account.')
+
+print('')
 hashtag = input('Enter your event hashtag: ').strip()
 
 print('')
 print('Writing data to file...')
 data = { 'bearer_token': bearer_token, 'access_token': access_token, 'hashtag': hashtag }
-file = open('.config', 'w')
+file = open('config.json', 'w')
 file.write(json.dumps(data))
 file.close()
 

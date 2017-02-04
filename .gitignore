@@ -1,6 +1,3 @@
 # Config file #
-.config
-
-# Media Directory #
-img/
+config.json
 

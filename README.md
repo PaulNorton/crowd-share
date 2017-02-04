@@ -15,8 +15,11 @@ Install twitter client:
 Install python imaging library:
 `pip3 install pillow`
 
-Install python requests library
+Install python requests library:
 `pip3 install requests`
+
+Install AWS Boto3 library:
+`pip3 install boto3`
 
 Run setup.py and follow instructions:
 `python3 setup.py`
