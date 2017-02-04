@@ -2,11 +2,8 @@ from tkinter import *
 from twitter import *
 from PIL import ImageTk, Image
 import io
-import os
-import shutil
 import json
 import boto3
-import botocore
 import requests
 from datetime import datetime
 
