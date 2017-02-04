@@ -12,7 +12,7 @@ from datetime import datetime
 class MyTk(Tk):
     def __init__(self, master=None):
         Tk.__init__(self, master)
-        
+
         file = open('config.json', 'r')
         config = json.loads(file.read())
         file.close()
@@ -34,6 +34,14 @@ class MyTk(Tk):
         self.panel.pack(side = 'bottom', fill = 'both', expand = 'yes')
 
         self.id = self.after(3000, self.callback)
+
+        self.bind('<f>', self.fullscreen)
+        self.bind('<Escape>', self.exit_fullscreen)
+
+    def fullscreen(self, e):
+        self.attributes('-fullscreen', True)
+    def exit_fullscreen(self, e):
+        self.attributes('-fullscreen', False)
 
     def callback(self):
         self.search_twitter()
@@ -89,6 +97,4 @@ class MyTk(Tk):
         return hashtag + '-' + date_str
 
 root = MyTk()
-root.attributes('-fullscreen', True)
-
 root.mainloop()
