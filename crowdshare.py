@@ -1,6 +1,7 @@
 from tkinter import *
 from twitter import *
-from PIL import ImageTk
+from PIL import ImageTk, Image
+import io
 import os
 import shutil
 import json
@@ -13,6 +14,27 @@ class MyTk(Tk):
     def __init__(self, master=None):
         Tk.__init__(self, master)
 
+        self.bind('<f>', self.fullscreen)
+        self.bind('<Escape>', self.exit_fullscreen)
+
+    def fullscreen(self, e):
+        self.attributes('-fullscreen', True)
+    def exit_fullscreen(self, e):
+        self.attributes('-fullscreen', False)
+
+class App(Frame):
+    def __init__(self, master):
+        Frame.__init__(self, master)
+        self.columnconfigure(0,weight=1)
+        self.rowconfigure(0,weight=1)
+        self.original = Image.open('logo.jpg')
+        self.image = ImageTk.PhotoImage(self.original)
+        self.display = Canvas(self, bd=0, highlightthickness=0)
+        self.display.create_image(self.display.winfo_width()/2, self.display.winfo_height()/2, image=self.image, anchor=CENTER, tags="IMG")
+        self.display.grid(row=0, sticky=W+E+N+S)
+        self.pack(fill=BOTH, expand=1)
+        self.bind("<Configure>", self.resize_event)
+        
         file = open('config.json', 'r')
         config = json.loads(file.read())
         file.close()
@@ -30,18 +52,20 @@ class MyTk(Tk):
         self.x = 1
         self.pics = []
 
-        self.panel = Label(self)
-        self.panel.pack(side = 'bottom', fill = 'both', expand = 'yes')
-
         self.id = self.after(3000, self.callback)
 
-        self.bind('<f>', self.fullscreen)
-        self.bind('<Escape>', self.exit_fullscreen)
+    def resize_event(self, event):
+        self.resize(event.width, event.height)
 
-    def fullscreen(self, e):
-        self.attributes('-fullscreen', True)
-    def exit_fullscreen(self, e):
-        self.attributes('-fullscreen', False)
+    def resize(self, width, height):
+        if height/width > self.original.height/self.original.width:
+            size = (width, int(width*self.original.height/self.original.width))
+        else:
+            size = (int(height*self.original.width/self.original.height), height)
+        resized = self.original.resize(size,Image.ANTIALIAS)
+        self.image = ImageTk.PhotoImage(resized)
+        self.display.delete("IMG")
+        self.display.create_image(width/2, height/2, image=self.image, anchor=CENTER, tags="IMG")        
 
     def callback(self):
         self.search_twitter()
@@ -55,9 +79,10 @@ class MyTk(Tk):
             if self.x > len(self.pics):
                 self.x = 1
             bytes = self.retrieve_from_aws(str(self.x) + '.jpg')
-            img = ImageTk.PhotoImage(data=bytes)
-            self.panel.configure(image = img)
-            self.panel.image = img
+            self.original = Image.open(io.BytesIO(bytes))
+            self.image = ImageTk.PhotoImage(self.original)
+            self.resize(self.display.winfo_width(), self.display.winfo_height())
+
             self.x += 1
 
     def search_twitter(self):
@@ -97,4 +122,5 @@ class MyTk(Tk):
         return hashtag + '-' + date_str
 
 root = MyTk()
-root.mainloop()
+app = App(root)
+app.mainloop()
