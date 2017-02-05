@@ -1,6 +1,8 @@
 # crowd-share
 A senior thesis project where users can host an event and collect pictures posted with the event hashtag
 
+![alt tag](logo.jpg?raw=true "CrowdShare Logo")
+
 ### Dependencies: ###
 
 * Built for Python 3: https://www.python.org/downloads/
