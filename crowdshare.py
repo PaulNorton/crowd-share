@@ -22,16 +22,17 @@ class MyTk(Tk):
 
 class App(Frame):
     def __init__(self, master):
-        Frame.__init__(self, master)
+        Frame.__init__(self, master, bg='black')
                 
         self.columnconfigure(0,weight=1)
         self.rowconfigure(0,weight=1)
         self.original = Image.open('logo.jpg')
         self.image = ImageTk.PhotoImage(self.original)
-        self.display = Canvas(self, bd=0, highlightthickness=0, bg='black')
-        self.display.create_image(self.display.winfo_width()/2, self.display.winfo_height()/2, image=self.image, anchor=CENTER, tags='IMG')
+        self.display = Canvas(self, bd=0, highlightthickness=0, bg='black', width=800, height=600)
+        self.display.create_image(0, 0, image=self.image, anchor=CENTER, tags='IMG')
         self.display.grid(row=0, sticky=W+E+N+S)
         self.pack(fill=BOTH, expand=1)
+        
         self.bind('<Configure>', self.resize_event)
         
         file = open('config.json', 'r')
@@ -59,6 +60,8 @@ class App(Frame):
         self.resize(event.width, event.height)
 
     def resize(self, width, height):
+        width -= 40
+        height -= 40
         if height/width > self.original.height/self.original.width:
             size = (width, int(width*self.original.height/self.original.width))
         else:
@@ -66,7 +69,7 @@ class App(Frame):
         resized = self.original.resize(size,Image.ANTIALIAS)
         self.image = ImageTk.PhotoImage(resized)
         self.display.delete('IMG')
-        self.display.create_image(width/2, height/2, image=self.image, anchor=CENTER, tags='IMG')        
+        self.display.create_image(width/2+20, height/2+20, image=self.image, anchor=CENTER, tags='IMG')        
 
     def callback(self):
         self.search_twitter()
@@ -86,7 +89,6 @@ class App(Frame):
                 self.original = Image.open(str(self.x) + '.jpg')
             self.image = ImageTk.PhotoImage(self.original)
             self.resize(self.display.winfo_width(), self.display.winfo_height())
-
             self.x += 1
 
     def search_twitter(self):
