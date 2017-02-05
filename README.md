@@ -1,7 +1,5 @@
-# crowd-share
+# ![CrowdShare](media/promo.jpg) 
 A senior thesis project where users can host an event and collect pictures posted with the event hashtag
-
-![logo](logo-small.jpg)
 
 ### Dependencies: ###
 

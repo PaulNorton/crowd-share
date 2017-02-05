@@ -26,7 +26,7 @@ class App(Frame):
                 
         self.columnconfigure(0,weight=1)
         self.rowconfigure(0,weight=1)
-        self.original = Image.open('logo.jpg')
+        self.original = Image.open('media/logo.jpg')
         self.image = ImageTk.PhotoImage(self.original)
         self.display = Canvas(self, bd=0, highlightthickness=0, bg='black', width=800, height=600)
         self.display.create_image(0, 0, image=self.image, anchor=CENTER, tags='IMG')
