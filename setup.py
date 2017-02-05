@@ -45,7 +45,7 @@ json_data = json.loads(r.content.decode())
 access_token = json_data['access_token']
 
 print('')
-print('You will also need to set up an AWS and use the AWS CLI to configure a default account.')
+print('If you have not already, please install the AWS CLI and configure a default profile at ~/.aws/credentials')
 
 print('')
 hashtag = input('Enter your event hashtag: ').strip()
