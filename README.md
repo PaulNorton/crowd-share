@@ -18,7 +18,7 @@ A python app where users can host an event and collect pictures posted with the 
 * Run setup.py and follow instructions: `python3 setup.py`
 * Run crowdshare.py: `python3 crowdshare.py`
 
-### Usage ###
+### Usage: ###
 
 * While app is running, post pictures to Twitter or Instagram (make sure account is public) with the hashtag for your event
 * Pictures will begin to appear and cycle on the screen
