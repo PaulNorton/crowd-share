@@ -3,16 +3,16 @@ A senior thesis project where users can host an event and collect pictures poste
 
 ### Dependencies: ###
 
-1. Built for Python 3: https://www.python.org/downloads/
-2. User must have the AWS CLI installed and set up with default credentials
-3. Install the following PyPI packages:
-a. Twitter client: `pip3 install twitter`
-b. Python imaging library: `pip3 install pillow`
-c. Python requests library: `pip3 install requests` 
-d. AWS Boto3 library: `pip3 install boto3`
+* Built for Python 3: https://www.python.org/downloads/
+* User must have the AWS CLI installed and set up with default credentials
+* Install the following PyPI packages:
+	1. Twitter client: `pip3 install twitter`
+	2. Python imaging library: `pip3 install pillow`
+	3. Python requests library: `pip3 install requests` 
+	4. AWS Boto3 library: `pip3 install boto3`
 
 ### Installation: ###
 
-1. Clone crowd-share: `git clone https://github.com/PaulNorton/crowd-share.git`
-2. Run setup.py and follow instructions: `python3 setup.py`
-3. Run crowdshare.py: `python3 crowdshare.py`
+* Clone crowd-share: `git clone https://github.com/PaulNorton/crowd-share.git`
+* Run setup.py and follow instructions: `python3 setup.py`
+* Run crowdshare.py: `python3 crowdshare.py`
