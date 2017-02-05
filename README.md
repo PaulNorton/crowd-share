@@ -1,4 +1,5 @@
 # ![CrowdShare](media/promo.jpg) 
+#crowd-share
 A python app where users can host an event and collect pictures posted with the event hashtag
 
 ### Dependencies: ###
