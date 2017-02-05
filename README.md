@@ -1,7 +1,7 @@
 # crowd-share
 A senior thesis project where users can host an event and collect pictures posted with the event hashtag
 
-![alt tag](logo.jpg?raw=true "CrowdShare Logo")
+<img src='logo.jpg' style='width: 200; height:200;' />
 
 ### Dependencies: ###
 
