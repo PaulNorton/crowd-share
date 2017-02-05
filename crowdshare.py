@@ -28,11 +28,11 @@ class App(Frame):
         self.rowconfigure(0,weight=1)
         self.original = Image.open('logo.jpg')
         self.image = ImageTk.PhotoImage(self.original)
-        self.display = Canvas(self, bd=0, highlightthickness=0)
-        self.display.create_image(self.display.winfo_width()/2, self.display.winfo_height()/2, image=self.image, anchor=CENTER, tags="IMG")
+        self.display = Canvas(self, bd=0, highlightthickness=0, bg='black')
+        self.display.create_image(self.display.winfo_width()/2, self.display.winfo_height()/2, image=self.image, anchor=CENTER, tags='IMG')
         self.display.grid(row=0, sticky=W+E+N+S)
         self.pack(fill=BOTH, expand=1)
-        self.bind("<Configure>", self.resize_event)
+        self.bind('<Configure>', self.resize_event)
         
         file = open('config.json', 'r')
         config = json.loads(file.read())
@@ -65,8 +65,8 @@ class App(Frame):
             size = (int(height*self.original.width/self.original.height), height)
         resized = self.original.resize(size,Image.ANTIALIAS)
         self.image = ImageTk.PhotoImage(resized)
-        self.display.delete("IMG")
-        self.display.create_image(width/2, height/2, image=self.image, anchor=CENTER, tags="IMG")        
+        self.display.delete('IMG')
+        self.display.create_image(width/2, height/2, image=self.image, anchor=CENTER, tags='IMG')        
 
     def callback(self):
         self.search_twitter()
