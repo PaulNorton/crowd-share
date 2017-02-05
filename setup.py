@@ -52,7 +52,7 @@ hashtag = input('Enter your event hashtag: ').strip()
 
 print('')
 print('Writing data to file...')
-data = { 'bearer_token': bearer_token, 'access_token': access_token, 'hashtag': hashtag }
+data = { 'bearer_token': bearer_token, 'access_token': access_token, 'hashtag': hashtag, 'aws': True }
 file = open('config.json', 'w')
 file.write(json.dumps(data))
 file.close()

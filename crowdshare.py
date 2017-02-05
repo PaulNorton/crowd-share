@@ -6,6 +6,7 @@ import json
 import boto3
 import requests
 from datetime import datetime
+from urllib.request import urlretrieve
 
 class MyTk(Tk):
     def __init__(self, master=None):
@@ -22,6 +23,7 @@ class MyTk(Tk):
 class App(Frame):
     def __init__(self, master):
         Frame.__init__(self, master)
+                
         self.columnconfigure(0,weight=1)
         self.rowconfigure(0,weight=1)
         self.original = Image.open('logo.jpg')
@@ -39,12 +41,14 @@ class App(Frame):
         self.BEARER_TOKEN = config['bearer_token']
         self.ACCESS_TOKEN = config['access_token']        
         self.HASHTAG = config['hashtag']
+        self.AWS = config['aws'];
 
         self.twitter = Twitter(auth=OAuth2(bearer_token=self.BEARER_TOKEN))
         
-        self.s3 = boto3.resource('s3')
-        self.bucket_name = self.build_bucket_name(self.HASHTAG, datetime.now())            
-        self.bucket = self.s3.create_bucket(Bucket=self.bucket_name)
+        if self.AWS:
+            self.s3 = boto3.resource('s3')
+            self.bucket_name = self.build_bucket_name(self.HASHTAG, datetime.now())            
+            self.bucket = self.s3.create_bucket(Bucket=self.bucket_name)
 
         self.x = 1
         self.pics = []
@@ -75,8 +79,11 @@ class App(Frame):
         if len(self.pics) > 0:
             if self.x > len(self.pics):
                 self.x = 1
-            bytes = self.retrieve_from_aws(str(self.x) + '.jpg')
-            self.original = Image.open(io.BytesIO(bytes))
+            if self.AWS:
+                bytes = self.retrieve_from_aws(str(self.x) + '.jpg')
+                self.original = Image.open(io.BytesIO(bytes))
+            else:
+                self.original = Image.open(str(self.x) + '.jpg')
             self.image = ImageTk.PhotoImage(self.original)
             self.resize(self.display.winfo_width(), self.display.winfo_height())
 
@@ -107,9 +114,12 @@ class App(Frame):
                 self.save_to_aws(url)
                 
     def save_to_aws(self, url):
-        r = requests.get(url)
-        self.bucket.put_object(Key=str(len(self.pics)) + '.jpg', Body=r.content)
-        
+        if self.AWS:
+            r = requests.get(url)
+            self.bucket.put_object(Key=str(len(self.pics)) + '.jpg', Body=r.content)
+        else:
+            urlretrieve(url, str(len(self.pics)) + '.jpg')
+            
     def retrieve_from_aws(self, key):
         object = self.s3.Object(self.bucket_name,key)
         return object.get()['Body'].read()
