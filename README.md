@@ -1,5 +1,5 @@
 # ![CrowdShare](media/promo.jpg) 
-A senior thesis project where users can host an event and collect pictures posted with the event hashtag
+A python app where users can host an event and collect pictures posted with the event hashtag
 
 ### Dependencies: ###
 
@@ -16,3 +16,8 @@ A senior thesis project where users can host an event and collect pictures poste
 * Clone crowd-share: `git clone https://github.com/PaulNorton/crowd-share.git`
 * Run setup.py and follow instructions: `python3 setup.py`
 * Run crowdshare.py: `python3 crowdshare.py`
+
+### Usage ###
+
+* While app is running, post pictures to Twitter or Instagram (make sure account is public) with the hashtag for your event
+* Pictures will begin to appear and cycle on the screen

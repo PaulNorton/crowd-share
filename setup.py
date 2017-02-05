@@ -2,7 +2,7 @@ from twitter import *
 import json
 import requests
 
-print('Welcome to CrowdShare. This program will help you set up your CrowdShare service.')
+print('Welcome to CrowdShare. This script will help you set up your CrowdShare service.')
 print('')
 print('First of all, you must set up a Twitter developer account and register a Twitter app at https://dev.twitter.com')
 print('When registration is complete, enter the app information.')
@@ -46,6 +46,7 @@ access_token = json_data['access_token']
 
 print('')
 print('If you have not already, please install the AWS CLI and configure a default profile at ~/.aws/credentials')
+input('Press enter when complete: ')
 
 print('')
 hashtag = input('Enter your event hashtag: ').strip()
