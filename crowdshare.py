@@ -1,14 +1,21 @@
+#
+# CrowdShare
+# Paul Norton
+#
+
+### Imports ###
 from tkinter import *
-from twitter import *
+from twython import *
 from PIL import ImageTk, Image
 import io
 import json
 import boto3
 import requests
 from datetime import datetime
-from urllib.request import urlretrieve
 
-class MyTk(Tk):
+### MyTk - Tk Class Extension ###
+# Gives Tkinter window ability to enter or exit full screen when user presses 'f' or 'esc'
+class RootTk(Tk):
     def __init__(self, master=None):
         Tk.__init__(self, master)
 
@@ -20,10 +27,13 @@ class MyTk(Tk):
     def exit_fullscreen(self, e):
         self.attributes('-fullscreen', False)
 
-class App(Frame):
+### CrowdShare - Frame Class Extension ###
+# This class handles all the main functionality of the CrowdShare app
+class CrowdShare(Frame):
     def __init__(self, master):
         Frame.__init__(self, master, bg='black')
-                
+        
+        # Configure initial display
         self.columnconfigure(0,weight=1)
         self.rowconfigure(0,weight=1)
         self.original = Image.open('media/logo.jpg')
@@ -33,28 +43,36 @@ class App(Frame):
         self.display.grid(row=0, sticky=W+E+N+S)
         self.pack(fill=BOTH, expand=1)
         
+        # Binds window resizing to CrowdShare.resize_event
         self.bind('<Configure>', self.resize_event)
         
+        # Import configuration created by setup.py
         file = open('config.json', 'r')
         config = json.loads(file.read())
         file.close()
         
-        self.BEARER_TOKEN = config['bearer_token']
-        self.ACCESS_TOKEN = config['access_token']        
-        self.HASHTAG = config['hashtag']
-        self.AWS = config['aws'];
+        # Twitter
+        self.APP_KEY = config['app_key']
+        self.APP_SECRET = config['app_secret']
+        self.OAUTH_TOKEN = config['oauth_token']
+        self.OAUTH_TOKEN_SECRET = config['oauth_token_secret']
+        self.twitter = Twython(self.APP_KEY, self.APP_SECRET, self.OAUTH_TOKEN, self.OAUTH_TOKEN_SECRET)
 
-        self.twitter = Twitter(auth=OAuth2(bearer_token=self.BEARER_TOKEN))
+        # Instagram
+        self.ACCESS_TOKEN = config['access_token']        
         
+        # Amazon Web Service
+        self.AWS = config['aws']
         if self.AWS:
             self.s3 = boto3.resource('s3')
             self.bucket_name = self.build_bucket_name(self.HASHTAG, datetime.now())            
             self.bucket = self.s3.create_bucket(Bucket=self.bucket_name)
 
+        # Set up other attributes
+        self.HASHTAG = config['hashtag']
         self.x = 0
         self.pics = []
         self.text = ''
-
         self.id = self.after(3000, self.callback)
 
     def resize_event(self, event):
@@ -76,6 +94,7 @@ class App(Frame):
 
     def callback(self):
         self.search_twitter()
+        self.get_twitter_dms()
         self.search_instagram()
         self.set_image()
         
@@ -101,7 +120,7 @@ class App(Frame):
             self.x += 1
 
     def search_twitter(self):
-        tweets = self.twitter.search.tweets(q='#'+self.HASHTAG)
+        tweets = self.twitter.search(q='#'+self.HASHTAG)
         for status in tweets['statuses']:
             try:
                 media = status['extended_entities']['media']
@@ -114,7 +133,22 @@ class App(Frame):
                         post = Post(id=item['id'], user_name=status['user']['screen_name'], platform='twitter', file_name=str(len(self.pics))+'.jpg', url=url, text=status['text'])
                         self.save_to_aws(post)
                         self.pics.append(post)
-    
+
+    def get_twitter_dms(self):
+        dms = self.twitter.get_direct_messages()
+        for dm in dms:
+            try:
+                media = dm['entities']['media']
+            except:
+                continue
+            for item in media:
+                if item['type'] == 'photo':
+                    url = item['media_url_https']
+                    if not any(x.id == item['id'] for x in self.pics):
+                        post = Post(id=item['id'], user_name=dm['sender']['screen_name'], platform='twitter', file_name=str(len(self.pics))+'.jpg', url=url, text=dm['text'])
+                        self.save_to_aws(post)
+                        self.pics.append(post)
+
     def search_instagram(self):
         r = requests.get('https://api.instagram.com/v1/tags/' + self.HASHTAG + '/media/recent?access_token=' + self.ACCESS_TOKEN)
         json_data = json.loads(r.content.decode())
@@ -127,11 +161,14 @@ class App(Frame):
                 self.pics.append(post)
                 
     def save_to_aws(self, post):
+        r = self.twitter.client.get(post.url)
         if self.AWS:
             r = requests.get(post.url)
             self.bucket.put_object(Key=post.file_name, Body=r.content)
         else:
-            urlretrieve(post.url, post.file_name)
+            file = open(post.file_name, 'wb')
+            file.write(r.content)
+            file.close()
             
     def retrieve_from_aws(self, key):
         object = self.s3.Object(self.bucket_name,key)
@@ -154,6 +191,6 @@ class Post:
         
         self.message = '"' + self.text + '" - ' + self.user_name + ' via ' + self.platform
 
-root = MyTk()
-app = App(root)
-app.mainloop()
+root = RootTk()
+crowdshare = CrowdShare(root)
+crowdshare.mainloop()

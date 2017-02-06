@@ -1,20 +1,19 @@
-from twitter import *
 import json
 import requests
 
 print('Welcome to CrowdShare. This script will help you set up your CrowdShare service.')
 print('')
 print('First of all, you must set up a Twitter developer account and register a Twitter app at https://dev.twitter.com')
-print('When registration is complete, enter the app information.')
+print('When registration is complete, go to Permissions and make sure the app can read and write direct messages.')
+print('Under Keys and Access Tokens, generate an access token and secret.')
+print('On the Twitter account you set up the app under, be sure to change your privacy settings to allow anyone to send you direct messages.')
+print('Finally, then enter the app information.')
 print('')
 
-consumer_key = input('Enter your consumer key: ').strip()
-consumer_secret = input('Enter your consumer secret: ').strip()
-
-print('')
-print('Getting your bearer token...')
-
-bearer_token = oauth2_dance(consumer_key, consumer_secret)
+app_key = input('Enter your consumer key: ').strip()
+app_secret = input('Enter your consumer secret: ').strip()
+oauth_token = input('Enter your access token: ').strip()
+oauth_token_secret = input('Enter your access token secret: ').strip()
 
 print('')
 print('Next, you must set up an Instagram developer account at https://www.instagram.com/developer/')
@@ -53,7 +52,15 @@ hashtag = input('Enter your event hashtag: ').strip()
 
 print('')
 print('Writing data to file...')
-data = { 'bearer_token': bearer_token, 'access_token': access_token, 'hashtag': hashtag, 'aws': True }
+data = {
+        'app_key': app_key,
+        'app_secret': app_secret,
+        'oauth_token': oauth_token,
+        'oauth_token_secret': oauth_token_secret,
+        'access_token': access_token,
+        'hashtag': hashtag,
+        'aws': True
+}
 file = open('config.json', 'w')
 file.write(json.dumps(data))
 file.close()
