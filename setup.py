@@ -1,7 +1,16 @@
+#
+# CrowdShare setup script
+# Paul Norton
+#
+
+### Imports ###
 import json
 import requests
 
+### Welcome ###
 print('Welcome to CrowdShare. This script will help you set up your CrowdShare service.')
+
+### Twitter ###
 print('')
 print('First of all, you must set up a Twitter developer account and register a Twitter app at https://dev.twitter.com')
 print('When registration is complete, go to Permissions and make sure the app can read and write direct messages.')
@@ -15,6 +24,7 @@ app_secret = input('Enter your consumer secret: ').strip()
 oauth_token = input('Enter your access token: ').strip()
 oauth_token_secret = input('Enter your access token secret: ').strip()
 
+### Instagram ###
 print('')
 print('Next, you must set up an Instagram developer account at https://www.instagram.com/developer/')
 print('Register an app and set the redirect uri to http://localhost')
@@ -43,13 +53,16 @@ r = requests.post(url, post_fields)
 json_data = json.loads(r.content.decode())
 access_token = json_data['access_token']
 
+### AWS ###
 print('')
 print('If you have not already, please install the AWS CLI and configure a default profile at ~/.aws/credentials')
 input('Press enter when complete: ')
 
+### Event hashtag ###
 print('')
 hashtag = input('Enter your event hashtag: ').strip()
 
+### Write data to config file ###
 print('')
 print('Writing data to file...')
 data = {
@@ -65,5 +78,6 @@ file = open('config.json', 'w')
 file.write(json.dumps(data))
 file.close()
 
+### Closing message ###
 print('')
 print('Setup complete! You may now run the app by typing `python3 crowdshare.py`')
