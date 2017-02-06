@@ -55,16 +55,19 @@ access_token = json_data['access_token']
 
 ### AWS ###
 print('')
-print('If you have not already, please install the AWS CLI and configure a default profile at ~/.aws/credentials')
-input('Press enter when complete: ')
+print('CrowdShare can save images to local storage or to an AWS S3 bucket.')
+print('If you want to use AWS, you must install the AWS CLI and configure a default profile at ~/.aws/credentials')
+print('CAUTION: there may be charges associated with using AWS')
+aws = input('Use AWS? (y/n):').strip().lower() == 'y'
 
 ### Event hashtag ###
 print('')
-hashtag = input('Enter your event hashtag: ').strip()
+hashtag = input('Enter your event hashtag: #').strip()
 
 ### Write data to config file ###
 print('')
 print('Writing data to file...')
+
 data = {
         'app_key': app_key,
         'app_secret': app_secret,
@@ -72,8 +75,9 @@ data = {
         'oauth_token_secret': oauth_token_secret,
         'access_token': access_token,
         'hashtag': hashtag,
-        'aws': True
+        'aws': aws
 }
+
 file = open('config.json', 'w')
 file.write(json.dumps(data))
 file.close()
