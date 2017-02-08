@@ -54,7 +54,10 @@ class CrowdShare(Frame):
         file = open('config.json', 'r')
         config = json.loads(file.read())
         file.close()
-        
+       
+        # Event hashtag
+        self.HASHTAG = config['hashtag']
+ 
         # Twitter
         self.APP_KEY = config['app_key']
         self.APP_SECRET = config['app_secret']
@@ -73,7 +76,6 @@ class CrowdShare(Frame):
             self.bucket = self.s3.create_bucket(Bucket=self.bucket_name)
 
         # Set up other attributes
-        self.HASHTAG = config['hashtag']
         self.x = 0
         self.pics = []
         self.text = ''
