@@ -1,0 +1,4 @@
+twython
+requests
+pillow
+boto3
