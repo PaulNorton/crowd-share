@@ -1,16 +1,16 @@
 #
-# instagram
+# csinstagram
 # Paul Norton
 #
 
 ### Imports ###
 import requests
 import json
-from modules.post import Post
+from modules.cspost import CSPost
 
-### Instagram - Custom Class ###
+### CSInstagram - Custom Class ###
 # Accesses Instagram API
-class Instagram():
+class CSInstagram():
     def __init__(self, access_token):
         self.ACCESS_TOKEN = access_token
 
@@ -21,7 +21,7 @@ class Instagram():
         posts = []
 
         for post in data:
-            post = Post(id=post['id'], user_name=post['user']['username'], platform='instagram', file_name='', url=post['images']['standard_resolution']['url'], text=post['caption']['text'])
+            post = CSPost(id=post['id'], user_name=post['user']['username'], platform='instagram', file_name='', url=post['images']['standard_resolution']['url'], text=post['caption']['text'])
             posts.append(post)
 
         return posts

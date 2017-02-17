@@ -1,11 +1,11 @@
 #
-# post
+# cspost
 # Paul Norton
 #
 
-### Post - Custom Class ###
+### CSPost - Custom Class ###
 # Contains all information about an image
-class Post:
+class CSPost:
     def __init__(self, id, user_name, platform, file_name, url, text):
         self.id = id
         self.user_name = user_name

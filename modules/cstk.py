@@ -1,14 +1,14 @@
 #
-# rootTk
+# cstk
 # Paul Norton
 #
 
 ### Imports ###
 from tkinter import *
 
-### RootTk - Tk Class Extension ###
+### CSTk - Tk Class Extension ###
 # Gives Tkinter window ability to enter or exit full screen when user presses 'f' or 'esc'
-class RootTk(Tk):
+class CSTk(Tk):
     def __init__(self, master=None):
         Tk.__init__(self, master)
 

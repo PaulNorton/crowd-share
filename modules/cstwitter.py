@@ -1,15 +1,15 @@
 #
-# twitter
+# cstwitter
 # Paul Norton
 #
 
 ### Imports ###
 from twython import *
-from modules.post import Post
+from modules.cspost import CSPost
 
-### Twitter - Twython Class Extension ###
+### CSTwitter - Twython Class Extension ###
 # Mirrors Twython capability
-class Twitter(Twython):
+class CSTwitter(Twython):
     def __init__(self, app_key, app_secret, oauth_token, oauth_token_secret):
         Twython.__init__(self, app_key, app_secret, oauth_token, oauth_token_secret)
 
@@ -29,7 +29,7 @@ class Twitter(Twython):
             # Cycle through media and get photos
             for item in media:
                 if item['type'] == 'photo':
-                    post = Post(id=item['id'], user_name=status['user']['screen_name'], platform='twitter', file_name='', url=item['media_url_https'], text=status['text'])
+                    post = CSPost(id=item['id'], user_name=status['user']['screen_name'], platform='twitter', file_name='', url=item['media_url_https'], text=status['text'])
                     posts.append(post)
 
         return posts
@@ -52,7 +52,7 @@ class Twitter(Twython):
                 # Cycle through media and get photos
                 for item in media:
                     if item['type'] == 'photo':
-                        post = Post(id=item['id'], user_name=dm['sender']['screen_name'], platform='twitter', file_name='', url=item['media_url_https'], text=dm['text'])
+                        post = CSPost(id=item['id'], user_name=dm['sender']['screen_name'], platform='twitter', file_name='', url=item['media_url_https'], text=dm['text'])
                         posts.append(post)
 
         return posts

@@ -1,5 +1,5 @@
 #
-# aws
+# csaws
 # Paul Norton
 #
 
@@ -7,9 +7,9 @@
 import boto3
 from datetime import datetime
 
-### Aws - Custom Class ###
+### CSAws - Custom Class ###
 # Accesses the AWS API
-class Aws():
+class CSAws():
     def __init__(self, aws_access_key_id, aws_secret_access_key, hashtag):
         self.s3 = boto3.resource('s3', aws_access_key_id = aws_access_key_id, aws_secret_access_key = aws_secret_access_key)
         self.bucket_name = self.build_bucket_name(hashtag, datetime.now())
