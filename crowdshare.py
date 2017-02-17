@@ -183,15 +183,17 @@ class CrowdShare(Frame):
             except:
                 continue
             
-            # Cycle through media and get photos
-            for item in media:
-                if item['type'] == 'photo':
-                    # Check if we've already processed the image
-                    if not any(x.id == item['id'] for x in self.pics):
-                        # Create Post object and save
-                        post = Post(id=item['id'], user_name=dm['sender']['screen_name'], platform='twitter', file_name=str(len(self.pics))+'.jpg', url=item['media_url_https'], text=dm['text'])
-                        self.save_image(post)
-                        self.pics.append(post)
+            # Ensure DM contains hashtag
+            if self.HASHTAG in dm['text']:
+	            # Cycle through media and get photos
+	            for item in media:
+	                if item['type'] == 'photo':
+	                    # Check if we've already processed the image
+	                    if not any(x.id == item['id'] for x in self.pics):
+	                        # Create Post object and save
+	                        post = Post(id=item['id'], user_name=dm['sender']['screen_name'], platform='twitter', file_name=str(len(self.pics))+'.jpg', url=item['media_url_https'], text=dm['text'])
+	                        self.save_image(post)
+	                        self.pics.append(post)
 
     # search_instagram: get instagram posts with event hashtag
     def search_instagram(self):
