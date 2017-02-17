@@ -5,12 +5,18 @@
 
 ### Imports ###
 from tkinter import *
+from modules.csframe import CSFrame
 
 ### CSTk - Tk Class Extension ###
 # Gives Tkinter window ability to enter or exit full screen when user presses 'f' or 'esc'
 class CSTk(Tk):
     def __init__(self, master=None):
         Tk.__init__(self, master)
+
+        self.frame = CSFrame(self)
+        button = Button(self, text="Settings", command=self.frame.callback)
+        button.pack(side="right")
+        self.frame.mainloop()
 
         # Bind key events to fullscreen
         self.bind('<f>', self.enter_fullscreen)

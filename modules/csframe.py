@@ -34,7 +34,7 @@ class CSFrame(Frame):
         self.client = CSClient()
 
         # Start callback cycle
-        self.id = self.after(3000, self.callback)
+        # self.id = self.after(3000, self.callback)
 
     # callback: main event, gets called every three seconds
     def callback(self):
