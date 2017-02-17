@@ -9,7 +9,6 @@ from PIL import ImageTk, Image
 import io
 import json
 from modules.rootTk import RootTk
-from modules.post import Post
 from modules.twitter import Twitter
 from modules.instagram import Instagram
 from modules.aws import Aws
@@ -123,7 +122,7 @@ class CrowdShare(Frame):
         for post in posts:
             # Check if we've already processed the image
             if not any(x.id == post.id for x in self.pics):
-                # Create Post object and save
+                # Update Post object and save
                 post.file_name = str(len(self.pics))+'.jpg'
                 self.save_image(post)
                 self.pics.append(post)
