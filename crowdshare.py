@@ -1,35 +1,18 @@
 #
-# CrowdShare
+# crowdshare
 # Paul Norton
 #
 
 ### Imports ###
 from tkinter import *
-from twython import *
 from PIL import ImageTk, Image
 import io
 import json
-import boto3
-import requests
-from datetime import datetime
-
-### MyTk - Tk Class Extension ###
-# Gives Tkinter window ability to enter or exit full screen when user presses 'f' or 'esc'
-class RootTk(Tk):
-    def __init__(self, master=None):
-        Tk.__init__(self, master)
-
-        # Bind key events to fullscreen
-        self.bind('<f>', self.enter_fullscreen)
-        self.bind('<Escape>', self.exit_fullscreen)
-    
-    # enter_fullscreen: go to fullscreen
-    def enter_fullscreen(self, e):
-        self.attributes('-fullscreen', True)
-    
-    # exit_fullscreen: go back to previous size
-    def exit_fullscreen(self, e):
-        self.attributes('-fullscreen', False)
+from modules.rootTk import RootTk
+from modules.post import Post
+from modules.twitter import Twitter
+from modules.instagram import Instagram
+from modules.aws import Aws
 
 ### CrowdShare - Frame Class Extension ###
 # Handles all the main functionality of the CrowdShare app
@@ -55,25 +38,17 @@ class CrowdShare(Frame):
         config = json.loads(file.read())
         file.close()
        
-        # Event hashtag
+        # Constants
         self.HASHTAG = config['hashtag']
  
         # Twitter
-        self.APP_KEY = config['app_key']
-        self.APP_SECRET = config['app_secret']
-        self.OAUTH_TOKEN = config['oauth_token']
-        self.OAUTH_TOKEN_SECRET = config['oauth_token_secret']
-        self.twitter = Twython(self.APP_KEY, self.APP_SECRET, self.OAUTH_TOKEN, self.OAUTH_TOKEN_SECRET)
+        self.twitter = Twitter(config['app_key'], config['app_secret'], config['oauth_token'], config['oauth_token_secret'])
 
         # Instagram
-        self.ACCESS_TOKEN = config['access_token']        
+        self.instagram = Instagram(config['access_token'])
         
         # Amazon Web Service
-        self.AWS = config['aws']
-        if self.AWS:
-            self.s3 = boto3.resource('s3')
-            self.bucket_name = self.build_bucket_name(self.HASHTAG, datetime.now())            
-            self.bucket = self.s3.create_bucket(Bucket=self.bucket_name)
+        self.aws = Aws(config['aws_access_key_id'], config['aws_secret_access_key'], self.HASHTAG)
 
         # Set up other attributes
         self.x = 0
@@ -86,9 +61,7 @@ class CrowdShare(Frame):
     # callback: main event, gets called every three seconds
     def callback(self):
         # Call various social media APIs
-        self.search_twitter()
-        self.get_twitter_dms()
-        self.search_instagram()
+        self.search_media()
         
         # Rotate image
         self.set_image()
@@ -132,12 +105,9 @@ class CrowdShare(Frame):
             # Get next post
             post = self.pics[self.x]
             
-            # Retrieve picture from AWS or local storage
-            if self.AWS:
-                bytes = self.retrieve_from_aws(post.file_name)
-                self.original = Image.open(io.BytesIO(bytes))
-            else:
-                self.original = Image.open(post.file_name)
+            # Retrieve picture from AWS
+            bytes = self.aws.retrieve_from_aws(post.file_name)
+            self.original = Image.open(io.BytesIO(bytes))
             
             # Set image and text and call resize
             self.image = ImageTk.PhotoImage(self.original)
@@ -148,66 +118,13 @@ class CrowdShare(Frame):
             self.x += 1
 
     # search_twitter: get tweets with event hashtag
-    def search_twitter(self):
-        # Call twitter API
-        tweets = self.twitter.search(q='#'+self.HASHTAG)
-        
-        # Cycle through tweets
-        for status in tweets['statuses']:
-            # Check if there are media attached
-            try:
-                media = status['extended_entities']['media']
-            except:
-                continue
-            
-            # Cycle through media and get photos
-            for item in media:
-                if item['type'] == 'photo':
-                    # Check if we've already processed the image
-                    if not any(x.id == item['id'] for x in self.pics):
-                        # Create Post object and save
-                        post = Post(id=item['id'], user_name=status['user']['screen_name'], platform='twitter', file_name=str(len(self.pics))+'.jpg', url=item['media_url_https'], text=status['text'])
-                        self.save_image(post)
-                        self.pics.append(post)
-
-    # get_twitter_dms: get direct messages sent to account
-    def get_twitter_dms(self):
-        # Call twitter API
-        dms = self.twitter.get_direct_messages()
-        
-        # Cycle through messages
-        for dm in dms:
-            # Check if there are media attached
-            try:
-                media = dm['entities']['media']
-            except:
-                continue
-            
-            # Ensure DM contains hashtag
-            if self.HASHTAG in dm['text']:
-	            # Cycle through media and get photos
-	            for item in media:
-	                if item['type'] == 'photo':
-	                    # Check if we've already processed the image
-	                    if not any(x.id == item['id'] for x in self.pics):
-	                        # Create Post object and save
-	                        post = Post(id=item['id'], user_name=dm['sender']['screen_name'], platform='twitter', file_name=str(len(self.pics))+'.jpg', url=item['media_url_https'], text=dm['text'])
-	                        self.save_image(post)
-	                        self.pics.append(post)
-
-    # search_instagram: get instagram posts with event hashtag
-    def search_instagram(self):
-        # Call instagram API
-        r = requests.get('https://api.instagram.com/v1/tags/' + self.HASHTAG + '/media/recent?access_token=' + self.ACCESS_TOKEN)
-        json_data = json.loads(r.content.decode())
-        posts = json_data['data']
-        
-        # Cycle through posts
+    def search_media(self):
+        posts = self.twitter.get_posts(self.HASHTAG) + self.twitter.get_dms(self.HASHTAG) + self.instagram.get_posts(self.HASHTAG)
         for post in posts:
             # Check if we've already processed the image
-            if not any(x.id == post['id'] for x in self.pics):
+            if not any(x.id == post.id for x in self.pics):
                 # Create Post object and save
-                post = Post(id=post['id'], user_name=post['user']['username'], platform='instagram', file_name=str(len(self.pics))+'.jpg', url=post['images']['standard_resolution']['url'], text=post['caption']['text'])
+                post.file_name = str(len(self.pics))+'.jpg'
                 self.save_image(post)
                 self.pics.append(post)
     
@@ -216,41 +133,8 @@ class CrowdShare(Frame):
         # Get image bytes (use twitter client for direct message authentication)
         r = self.twitter.client.get(post.url)
         
-        # Save to AWS or to local storage
-        if self.AWS:
-            r = requests.get(post.url)
-            self.bucket.put_object(Key=post.file_name, Body=r.content)
-        else:
-            file = open(post.file_name, 'wb')
-            file.write(r.content)
-            file.close()
-    
-    # retrieve_from_aws: get image from AWS
-    def retrieve_from_aws(self, key):
-        object = self.s3.Object(self.bucket_name,key)
-        return object.get()['Body'].read()
-    
-    # build_bucket_name: helper method to create name for S3 bucket
-    def build_bucket_name(self, hashtag, date):
-        date_str = str(date).replace(' ', '-').replace(':', '-').split('.')[0]
-        return hashtag + '-' + date_str
-
-### Post - Custom Class ###
-# Contains all information about an image
-class Post:
-    def __init__(self, id, user_name, platform, file_name, url, text):
-        self.id = id
-        self.user_name = user_name
-        self.platform = platform
-        self.file_name = file_name
-        self.url = url
-        
-        # Remove potentially bad characters (emojis, etc.)
-        text = text.encode('ascii', 'ignore').decode().strip()
-        self.text = (text[:75] + '...') if len(text) > 75 else text
-        
-        # Build message for image caption
-        self.message = '"' + self.text + '" - ' + self.user_name + ' via ' + self.platform
+        # Save to AWS
+        self.aws.post_to_aws(post.file_name, r.content)
 
 ### Initialization ###
 root = RootTk()

@@ -5,7 +5,6 @@ A python app where users can host an event and collect pictures posted with the 
 ### Dependencies: ###
 
 * Built for Python 3: https://www.python.org/downloads/
-* User must have the AWS CLI installed and set up with default credentials: https://aws.amazon.com/cli/
 * Install the following PyPI packages:
 	1. Twitter client: `pip3 install twython`
 	2. Python imaging library: `pip3 install pillow`

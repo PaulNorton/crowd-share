@@ -1,6 +1,5 @@
 # Config file #
 config.json
 
-# Media #
-*.jpg
-!media/*
+# Pycache #
+modules/__pycache__/*

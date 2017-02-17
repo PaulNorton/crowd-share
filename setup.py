@@ -55,10 +55,11 @@ access_token = json_data['access_token']
 
 ### AWS ###
 print('')
-print('CrowdShare can save images to local storage or to an AWS S3 bucket.')
-print('If you want to use AWS, you must install the AWS CLI and configure a default profile at ~/.aws/credentials')
+print('CrowdShare saves images to an AWS S3 bucket.')
+print('To create an AWS account, go to https://aws.amazon.com. Create an IAM User with programatic access and create an access key and secret')
 print('CAUTION: there may be charges associated with using AWS')
-aws = input('Use AWS? (y/n):').strip().lower() == 'y'
+aws_access_key_id = input('Enter your AWS access key id: ').strip()
+aws_secret_access_key = input('Enter your AWS secret access key: ').strip()
 
 ### Event hashtag ###
 print('')
@@ -75,7 +76,8 @@ data = {
         'oauth_token_secret': oauth_token_secret,
         'access_token': access_token,
         'hashtag': hashtag,
-        'aws': aws
+        'aws_access_key_id': aws_access_key_id,
+        'aws_secret_access_key': aws_secret_access_key
 }
 
 file = open('config.json', 'w')
