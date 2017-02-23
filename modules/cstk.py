@@ -16,16 +16,23 @@ class CSTk(Tk):
 
         self.frame = CSFrame(self)
 
-        startButton = Button(self, text="Start", command=self.frame.callback)
-        startButton.pack(side="left")
-        
-        settingsButton = Button(self, text="Settings", command=self.open_settings_window)
-        settingsButton.pack(side="right")
-        self.frame.mainloop()
+        menu = Menu(self)
+        filemenu = Menu(menu, tearoff=0)
+        filemenu.add_command(label="Preferences", command=self.open_settings_window)
+        menu.add_cascade(label="File", menu=filemenu)
+        self.config(menu=menu)
+
+        try:
+            file = open('config.json', 'r')
+            file.close()
+        except:
+            self.open_settings_window()
 
         # Bind key events to fullscreen
         self.bind('<f>', self.enter_fullscreen)
         self.bind('<Escape>', self.exit_fullscreen)
+
+        self.frame.mainloop()
     
     # enter_fullscreen: go to fullscreen
     def enter_fullscreen(self, e):

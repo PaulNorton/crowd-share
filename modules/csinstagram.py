@@ -25,3 +25,13 @@ class CSInstagram():
             posts.append(post)
 
         return posts
+
+    def generate_url(self, client_id):
+        return 'https://api.instagram.com/oauth/authorize/?client_id=' + client_id + '&redirect_uri=http://localhost&response_type=code&scope=public_content'
+
+    def get_access_token(self, client_id, client_secret, code):
+        url = 'https://api.instagram.com/oauth/access_token'
+        post_fields = {'client_id': client_id, 'client_secret': client_secret, 'grant_type': 'authorization_code', 'redirect_uri': 'http://localhost', 'code': code }
+        r = requests.post(url, post_fields)
+        json_data = json.loads(r.content.decode())
+        return json_data['access_token']

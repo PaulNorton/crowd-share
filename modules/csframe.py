@@ -26,15 +26,23 @@ class CSFrame(Frame):
         self.display = Canvas(self, bd=0, highlightthickness=0, bg='black', width=800, height=600)
         self.display.create_image(0, 0, image=self.image, anchor=CENTER, tags='IMG')
         self.display.grid(row=0, sticky=W+E+N+S)
+
+        self.start_button = Label(self, text='Start!', fg='white', bg='black', font=('Helvetica', 24, 'bold'))
+        self.start_button.bind('<Button-1>', self.start)
+        self.start_button.grid(row=1, pady=20)
+
         self.pack(fill=BOTH, expand=1)
         
         # Binds window resizing to CrowdShare.resize_event
         self.bind('<Configure>', self.resize_event)
         
-        self.client = CSClient()
-
         # Start callback cycle
         # self.id = self.after(3000, self.callback)
+
+    def start(self, e):
+        self.start_button.grid_forget()
+        self.client = CSClient()
+        self.callback()
 
     # callback: main event, gets called every three seconds
     def callback(self):
@@ -77,4 +85,4 @@ class CSFrame(Frame):
         self.display.delete('IMG')
         self.display.delete('TEXT')
         self.display.create_image(width/2+20, height/2+20, image=self.image, anchor=CENTER, tags='IMG')
-        self.display.create_text(width/2+20, height+100, anchor=S, text=self.text, tags='TEXT', fill='white', font=("Purisa", 18), width=width, justify=CENTER)
+        self.display.create_text(width/2+20, height+100, anchor=S, text=self.text, tags='TEXT', fill='white', font=("Helvetica", 18), width=width, justify=CENTER)
