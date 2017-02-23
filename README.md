@@ -8,7 +8,6 @@ A python app where users can host an event and collect pictures posted with the 
 
 * Clone crowd-share: `git clone https://github.com/PaulNorton/crowd-share.git`
 * Install dependencies: `pip3 install -r requirements.txt`
-* Run setup.py and follow instructions: `python3 setup.py`
 * Run crowdshare.py: `python3 crowdshare.py`
 
 ### Usage: ###
