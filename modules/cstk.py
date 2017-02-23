@@ -5,6 +5,7 @@
 
 ### Imports ###
 from tkinter import *
+import pickle
 from modules.csframe import CSFrame
 from modules.cssettingswindow import CSSettingsWindow
 
@@ -32,8 +33,7 @@ class CSTk(Tk):
         self.config(menu=menu)
 
         try:
-            file = open('config.json', 'r')
-            file.close()
+            open( "config.p", "rb" )
         except:
             self.open_settings_window()
 

@@ -4,7 +4,7 @@
 #
 
 ### Imports ###
-import json
+import pickle
 from modules.cstwitter import CSTwitter
 from modules.csinstagram import CSInstagram
 from modules.csaws import CSAws
@@ -14,9 +14,7 @@ from modules.csaws import CSAws
 class CSClient():
     def __init__(self):
         # Import configuration created by setup.py
-        file = open('config.json', 'r')
-        config = json.loads(file.read())
-        file.close()
+        config = pickle.load( open( "config.p", "rb" ) )
 
         # Constants
         self.HASHTAG = config['hashtag']

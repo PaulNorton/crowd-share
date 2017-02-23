@@ -1,5 +1,5 @@
 # Config file #
-config.json
+config.p
 
 # Pycache #
 modules/__pycache__/*

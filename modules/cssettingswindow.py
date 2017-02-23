@@ -5,7 +5,7 @@
 
 ### Imports ###
 from tkinter import *
-import json
+import pickle
 from modules.csinstagram import CSInstagram
 
 ### CSSettingsWindow - Toplevel Class Extension ###
@@ -19,9 +19,7 @@ class CSSettingsWindow(Toplevel):
         self.lift(master)
 
         try:
-            file = open('config.json', 'r')
-            config = json.loads(file.read())
-            file.close()
+            config = pickle.load( open( "config.p", "rb" ) )
         except:
             config = {
                     'app_key': '',
@@ -99,9 +97,7 @@ class CSSettingsWindow(Toplevel):
                 'aws_secret_access_key': self.aws_secret_access_key.entry.get()
         }
 
-        file = open('config.json', 'w')
-        file.write(json.dumps(data))
-        file.close()
+        pickle.dump( data, open( "config.p", "wb" ) )
 
         self.destroy()
 
