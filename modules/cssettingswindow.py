@@ -14,7 +14,9 @@ class CSSettingsWindow(Toplevel):
     def __init__(self, master):
         Toplevel.__init__(self, master)
 
-        self.lift()
+        self.title('Preferences')
+
+        self.lift(master)
 
         try:
             file = open('config.json', 'r')
@@ -39,9 +41,6 @@ class CSSettingsWindow(Toplevel):
 
         self.row = 0
         self.instagram = CSInstagram("")
-
-        main_title = Label(self.frame, text='Settings', font=("Helvetica", 24, 'bold'))
-        main_title.grid(row=self.next_row(), columnspan=3)
 
         # Twitter
         twitter_title = CSTitle(self.frame, 'Twitter', self.next_row())
