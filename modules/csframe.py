@@ -19,17 +19,10 @@ class CSFrame(Frame):
         self.columnconfigure(0,weight=1)
         self.rowconfigure(0,weight=1)
 
-        self.original = Image.open('media/logo.jpg')
-        self.image = ImageTk.PhotoImage(self.original)
-        self.text = ''
-
         self.display = Canvas(self, bd=0, highlightthickness=0, bg='black', width=800, height=600)
-        self.display.create_image(0, 0, image=self.image, anchor=CENTER, tags='IMG')
         self.display.grid(row=0, sticky=W+E+N+S)
 
-        self.start_button = Label(self, text='Start!', fg='white', bg='black', font=('Helvetica', 24, 'bold'))
-        self.start_button.bind('<Button-1>', self.start)
-        self.start_button.grid(row=1, pady=20)
+        self.initialize()
 
         self.pack(fill=BOTH, expand=1)
         
@@ -39,28 +32,49 @@ class CSFrame(Frame):
         # Start callback cycle
         # self.id = self.after(3000, self.callback)
 
-    def start(self, e):
-        self.start_button.grid_forget()
+    def initialize(self, e=None):
+        self.original = Image.open('media/logo.jpg')
+        self.image = ImageTk.PhotoImage(self.original)
+        self.text = ''
+
+        if self.display.winfo_width() > 40:
+            width = self.display.winfo_width()
+        else:
+            width = 800
+
+        if self.display.winfo_height() > 120:
+            height = self.display.winfo_height()
+        else:
+            height = 600
+
+        self.resize(width,height)
+
+
+        self.continue_callback = False
+
+    def start(self, e=None):
         self.client = CSClient()
+        self.continue_callback = True
         self.callback()
 
     # callback: main event, gets called every three seconds
     def callback(self):
-        # Call various social media APIs
-        self.client.search_media()
-        
-        # Rotate image
-        image = self.client.get_next_image()
+        if self.continue_callback:
+            # Call various social media APIs
+            self.client.search_media()
+            
+            # Rotate image
+            image = self.client.get_next_image()
 
-        if image['success']:
-            # Set image and text and call resize
-            self.original = Image.open(io.BytesIO(image['bytes']))
-            self.image = ImageTk.PhotoImage(self.original)
-            self.text = image['message']
-            self.resize(self.display.winfo_width(), self.display.winfo_height())
+            if image['success']:
+                # Set image and text and call resize
+                self.original = Image.open(io.BytesIO(image['bytes']))
+                self.image = ImageTk.PhotoImage(self.original)
+                self.text = image['message']
+                self.resize(self.display.winfo_width(), self.display.winfo_height())
         
-        # Continue callback cycle
-        self.id = self.after(3000, self.callback)
+            # Continue callback cycle
+            self.id = self.after(3000, self.callback)
 
     # resize_event: called when window is resized
     def resize_event(self, event):
