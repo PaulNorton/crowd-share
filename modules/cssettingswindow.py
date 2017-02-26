@@ -72,7 +72,7 @@ class CSSettingsWindow(Toplevel):
         # Hashtag
         hashtag_title = CSTitle(self.frame, 'Event Hashtag', self.next_row())
 
-        self.hashtag = CSEntry(self.frame, 'Hashtag', config['hashtag'], self.next_row())
+        self.hashtag = CSEntry(self.frame, 'Hashtag', config['hashtag'], self.next_row(), hidetext=False)
 
         sep4 = CSSeparator(self.frame, self.next_row())
 
@@ -112,16 +112,27 @@ class CSSettingsWindow(Toplevel):
         self.access_token.entry.insert(0, access_token)
 
 class CSEntry():
-    def __init__(self, master, text, value, row, button_text=None, button_command=None):
+    def __init__(self, master, text, value, row, button_text=None, button_command=None, hidetext=True):
         self.label = Label(master, text=text)
         self.label.grid(row=row, sticky=W)
         self.entry = Entry(master, width=50)
         self.entry.grid(row=row, column=1)
         self.entry.insert(0, value)
 
+        if hidetext:
+            self.entry.config(show='*')
+            self.entry.bind('<FocusIn>', self.show)
+            self.entry.bind('<FocusOut>', self.hide)
+
         if button_text:
             self.button = Button(master, text=button_text, command=button_command)
             self.button.grid(row=row, column=2, sticky=W)
+    
+    def show(self, e=None):
+        self.entry.config(show='')
+
+    def hide(self, e=None):
+        self.entry.config(show='*')
 
 class CSTitle():
     def __init__(self, master, text, row):
