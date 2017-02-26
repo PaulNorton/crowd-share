@@ -35,7 +35,7 @@ class CSFrame(Frame):
     def initialize(self, e=None):
         self.original = Image.open('media/logo.jpg')
         self.image = ImageTk.PhotoImage(self.original)
-        self.text = ''
+        self.text = 'Select File -> Start or Command-R to begin'
 
         if self.display.winfo_width() > 40:
             width = self.display.winfo_width()
