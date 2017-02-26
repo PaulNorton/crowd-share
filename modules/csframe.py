@@ -52,7 +52,7 @@ class CSFrame(Frame):
 
         self.continue_callback = False
 
-    def start(self, e=None):
+    def start(self, e=None):     
         self.client = CSClient()
         self.continue_callback = True
         self.callback()
@@ -99,4 +99,4 @@ class CSFrame(Frame):
         self.display.delete('IMG')
         self.display.delete('TEXT')
         self.display.create_image(width/2+20, height/2+20, image=self.image, anchor=CENTER, tags='IMG')
-        self.display.create_text(width/2+20, height+100, anchor=S, text=self.text, tags='TEXT', fill='white', font=("Helvetica", 18), width=width, justify=CENTER)
+        self.display.create_text(width/2+20, height+100, anchor=S, text=self.text, tags='TEXT', fill='white', font=("Helvetica", int(width/45)), width=width, justify=CENTER)

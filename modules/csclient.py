@@ -34,7 +34,12 @@ class CSClient():
 
     # search_twitter: get tweets with event hashtag
     def search_media(self):
-        posts = self.twitter.get_posts(self.HASHTAG) + self.twitter.get_dms(self.HASHTAG) + self.instagram.get_posts(self.HASHTAG)
+        tweets = self.twitter.get_posts(self.HASHTAG)
+        dms = self.twitter.get_dms(self.HASHTAG)
+        instas = self.instagram.get_posts(self.HASHTAG)
+
+        posts =  tweets + dms + instas
+
         for post in posts:
             # Check if we've already processed the image
             if not any(x.id == post.id for x in self.pics):
