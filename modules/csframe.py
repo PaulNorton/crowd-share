@@ -52,7 +52,7 @@ class CSFrame(Frame):
 
         self.continue_callback = False
 
-    def start(self, e=None):     
+    def start(self, e=None):
         self.client = CSClient()
         self.continue_callback = True
         self.callback()
@@ -66,12 +66,10 @@ class CSFrame(Frame):
             # Rotate image
             image = self.client.get_next_image()
 
-            if image['success']:
-                # Set image and text and call resize
-                self.original = Image.open(io.BytesIO(image['bytes']))
-                self.image = ImageTk.PhotoImage(self.original)
-                self.text = image['message']
-                self.resize(self.display.winfo_width(), self.display.winfo_height())
+            self.original = Image.open(io.BytesIO(image['bytes']))
+            self.image = ImageTk.PhotoImage(self.original)
+            self.text = image['message']
+            self.resize(self.display.winfo_width(), self.display.winfo_height())
         
             # Continue callback cycle
             self.id = self.after(3000, self.callback)

@@ -58,14 +58,11 @@ class CSClient():
 
     # rotate_image: Rotate image on the window
     def get_next_image(self):
-        success = False
         bytes = None
         message = ""
 
         # Make sure we have pictures
         if len(self.pics) > 0:
-            success = True
-
             # Reset counter if necessary
             if self.x == len(self.pics):
                 self.x = 0
@@ -79,5 +76,10 @@ class CSClient():
             message = post.message
             
             self.x += 1
-
-        return { 'success': success, 'bytes': bytes, 'message': message }            
+        else:
+            file = open('media/logo.jpg', 'rb')
+            bytes = file.read()
+            file.close()
+            
+            message = 'Post pictures to Instagram and Twitter with \'#' + self.HASHTAG + '\''
+        return { 'bytes': bytes, 'message': message }            
